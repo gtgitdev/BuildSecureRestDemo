@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LandonApi.Filters;
 using LandonApi.Models;
+using LandonApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,8 @@ namespace LandonApi
         {
             services.Configure<HotelInfo>(
                 Configuration.GetSection("Info"));
+
+            services.AddScoped<IRoomService, DefaultRoomService>();
 
             //use in memory database for development and testing
             //TODO: Swap out for a real database in production
