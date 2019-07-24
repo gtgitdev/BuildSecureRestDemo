@@ -9,7 +9,7 @@ namespace LandonApi.Controllers
     [Route("/")]
     [ApiController]
     [ApiVersion("1.0")]
-    public class RootController: ControllerBase
+    public class RootController : ControllerBase
     {
         [HttpGet(Name = nameof(GetRoot))]
         public IActionResult GetRoot()
@@ -19,7 +19,11 @@ namespace LandonApi.Controllers
                 href = Url.Link(nameof(GetRoot), null),
                 rooms = new
                 {
-                    href = Url.Link(nameof(RoomsController.GetRooms),null)
+                    href = Url.Link(nameof(RoomsController.GetRooms), null)
+                },
+                info = new
+                {
+                    href = Url.Link(nameof(InfoController.GetInfo), null)
                 }
             };
 
