@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using LandonApi.Filters;
+using LandonApi.Infrastructure;
 using LandonApi.Models;
 using LandonApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +36,10 @@ namespace LandonApi
                 Configuration.GetSection("Info"));
 
             services.AddScoped<IRoomService, DefaultRoomService>();
+
+            var test = AppDomain.CurrentDomain.GetAssemblies();
+            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(typeof(MappingProfile));
 
             //use in memory database for development and testing
             //TODO: Swap out for a real database in production
