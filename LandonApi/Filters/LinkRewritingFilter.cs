@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace LandonApi.Filters
 {
-    public class LinkRewritingFilter:IAsyncResultFilter
+    public class LinkRewritingFilter : IAsyncResultFilter
     {
         private readonly IUrlHelperFactory urlHelperFactory;
 
@@ -35,7 +35,7 @@ namespace LandonApi.Filters
 
         private static void RewriteAllLinks(object model, LinkRewriter reWriter)
         {
-            if(model ==null) return;
+            if (model == null) return;
 
             var allProperties = model
                 .GetType().GetTypeInfo()
@@ -51,8 +51,21 @@ namespace LandonApi.Filters
                 var rewritten = reWriter.Rewrite(linkProperty.GetValue(model) as Link);
                 if (rewritten == null) continue;
 
-                linkProperty.SetValue(model,rewritten);
-                
+                linkProperty.SetValue(model, rewritten);
+
+                //Special handling of the hidden Self property
+                //Unwrap the root object
+                if (linkProperty.Name == nameof(Resource.Self))
+                {
+                    allProperties.SingleOrDefault(p => p.Name == nameof(Resource.Href))
+                        ?.SetValue(model, rewritten.Href);
+
+                    allProperties.SingleOrDefault(p => p.Name == nameof(Resource.Method))
+                        ?.SetValue(model, rewritten.Method);
+
+                    allProperties.SingleOrDefault(p => p.Name == nameof(Resource.Relations))
+                        ?.SetValue(model, rewritten.Relations);
+                }
             }
 
             var arrayProperties = allProperties.Where(p => p.PropertyType.IsArray).ToArray();
