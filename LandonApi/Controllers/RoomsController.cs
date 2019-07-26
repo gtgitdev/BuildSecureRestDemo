@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LandonApi.Controllers
 {
-   
+
     [Route("/[controller]")]
     [ApiController]
-    public class RoomsController: ControllerBase
+    public class RoomsController : ControllerBase
     {
         private readonly IRoomService roomService;
         private readonly IOpeningService openingService;
@@ -40,20 +40,24 @@ namespace LandonApi.Controllers
         // GET /rooms/openings
         [HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<Collection<Opening>>> GetAllRoomOpenings()
+        public async Task<ActionResult<PagedCollection<Opening>>> GetAllRoomOpenings([FromQuery] PagingOptions pagingOptions = null)
         {
-            var openings = await openingService.GetOpeningsAsync();
+            var openings = await openingService.GetOpeningsAsync(pagingOptions);
 
-            var collection = new Collection<Opening>()
+            var collection = new PagedCollection<Opening>()
             {
                 Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
-                Value = openings.ToArray()
+                Value = openings.Items.ToArray(),
+                Size = openings.TotalSize,
+                Offset = pagingOptions?.Offset ?? 0,
+                Limit = pagingOptions?.Limit ?? 0
+
             };
 
             return collection;
         }
 
-        [HttpGet("{roomId}", Name = nameof(GetRoomById) ) ]
+        [HttpGet("{roomId}", Name = nameof(GetRoomById))]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         public async Task<ActionResult<Room>> GetRoomById(Guid roomId)
