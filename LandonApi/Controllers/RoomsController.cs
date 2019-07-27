@@ -6,6 +6,7 @@ using LandonApi.Models;
 using LandonApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace LandonApi.Controllers
 {
@@ -16,11 +17,16 @@ namespace LandonApi.Controllers
     {
         private readonly IRoomService roomService;
         private readonly IOpeningService openingService;
+        private readonly PagingOptions defaultPagingOptions;
 
-        public RoomsController(IRoomService roomService, IOpeningService openingService)
+        public RoomsController(
+            IRoomService roomService,
+            IOpeningService openingService,
+            IOptions<PagingOptions> defaultPagingOptions )
         {
             this.roomService = roomService;
             this.openingService = openingService;
+            this.defaultPagingOptions = defaultPagingOptions.Value;
         }
 
         [HttpGet(Name = nameof(GetAllRooms))]
@@ -40,8 +46,14 @@ namespace LandonApi.Controllers
         // GET /rooms/openings
         [HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
         [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult<PagedCollection<Opening>>> GetAllRoomOpenings([FromQuery] PagingOptions pagingOptions = null)
         {
+            pagingOptions = pagingOptions ?? new PagingOptions();
+
+            pagingOptions.Offset = pagingOptions.Offset ?? defaultPagingOptions.Offset;
+            pagingOptions.Limit = pagingOptions.Limit ?? defaultPagingOptions.Limit;
+
             var openings = await openingService.GetOpeningsAsync(pagingOptions);
 
             var collection = new PagedCollection<Opening>()
@@ -49,8 +61,8 @@ namespace LandonApi.Controllers
                 Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
                 Value = openings.Items.ToArray(),
                 Size = openings.TotalSize,
-                Offset = pagingOptions?.Offset ?? 0,
-                Limit = pagingOptions?.Limit ?? 0
+                Offset = pagingOptions.Offset ,
+                Limit = pagingOptions.Limit
 
             };
 
