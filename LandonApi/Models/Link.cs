@@ -14,7 +14,7 @@ namespace LandonApi.Models
         public static Link To(string routeName, object routeValues = null)
             => new Link
             {
-                RoutName = routeName,
+                RouteName = routeName,
                 RouteValues = routeValues,
                 Method = GetMethod,
                 Relations = null
@@ -23,7 +23,7 @@ namespace LandonApi.Models
         public static Link ToCollection(string routeName, object routeValues = null)
             => new Link
             {
-                RoutName = routeName,
+                RouteName = routeName,
                 RouteValues = routeValues,
                 Method = GetMethod,
                 Relations = new []{"collection"}
@@ -43,7 +43,7 @@ namespace LandonApi.Models
 
         //Stores the route name before being rewritten by tje rewriter
         [JsonIgnore]
-        public string RoutName { get; set; }
+        public string RouteName { get; set; }
         [JsonIgnore]
         public object RouteValues { get; set; }
 

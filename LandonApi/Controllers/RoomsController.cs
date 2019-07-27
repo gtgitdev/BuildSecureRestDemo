@@ -31,14 +31,21 @@ namespace LandonApi.Controllers
 
         [HttpGet(Name = nameof(GetAllRooms))]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<Collection<Room>>> GetAllRooms()
+        public async Task<ActionResult<Collection<Room>>> GetAllRooms([FromQuery] PagingOptions pagingOptions = null)
         {
-            var rooms = await roomService.GetRoomsAsync();
-            var collection = new Collection<Room>()
-            {
-                Self = Link.ToCollection(nameof(GetAllRooms)),
-                Value = rooms.ToArray()
-            };
+            pagingOptions = pagingOptions ?? new PagingOptions();
+
+            pagingOptions.Offset = pagingOptions.Offset ?? defaultPagingOptions.Offset;
+            pagingOptions.Limit = pagingOptions.Limit ?? defaultPagingOptions.Limit;
+
+            var rooms = await roomService.GetRoomsAsync(pagingOptions);
+
+            var collection = PagedCollection<Room>.Create<RoomsResponse>(
+                Link.ToCollection(nameof(GetAllRooms)),
+                rooms.Items.ToArray(),
+                rooms.TotalSize,
+                pagingOptions);
+            collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
 
             return collection;
         }
@@ -56,15 +63,11 @@ namespace LandonApi.Controllers
 
             var openings = await openingService.GetOpeningsAsync(pagingOptions);
 
-            var collection = new PagedCollection<Opening>()
-            {
-                Self = Link.ToCollection(nameof(GetAllRoomOpenings)),
-                Value = openings.Items.ToArray(),
-                Size = openings.TotalSize,
-                Offset = pagingOptions.Offset ,
-                Limit = pagingOptions.Limit
-
-            };
+            var collection = PagedCollection<Opening>.Create(
+                Link.ToCollection(nameof(GetAllRoomOpenings)),
+                openings.Items.ToArray(),
+                openings.TotalSize,
+                pagingOptions);
 
             return collection;
         }

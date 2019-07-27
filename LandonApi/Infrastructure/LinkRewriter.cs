@@ -21,7 +21,7 @@ namespace LandonApi.Infrastructure
             if (original == null) return null;
             return new Link
             {
-                Href = urlHelper.Link(original.RoutName, original.RouteValues),
+                Href = urlHelper.Link(original.RouteName, original.RouteValues),
                 Method = original.Method,
                 Relations = original.Relations
             };
