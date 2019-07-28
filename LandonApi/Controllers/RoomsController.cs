@@ -33,14 +33,15 @@ namespace LandonApi.Controllers
         [ProducesResponseType(200)]
         public async Task<ActionResult<Collection<Room>>> GetAllRooms(
             [FromQuery] PagingOptions pagingOptions,
-            [FromQuery] SortOptions<Room, RoomEntity> sortOptions)
+            [FromQuery] SortOptions<Room, RoomEntity> sortOptions,
+            [FromQuery] SearchOptions<Room, RoomEntity> searchOptions)
         {
             pagingOptions = pagingOptions ?? new PagingOptions();
 
             pagingOptions.Offset = pagingOptions.Offset ?? defaultPagingOptions.Offset;
             pagingOptions.Limit = pagingOptions.Limit ?? defaultPagingOptions.Limit;
 
-            var rooms = await roomService.GetRoomsAsync(pagingOptions, sortOptions);
+            var rooms = await roomService.GetRoomsAsync(pagingOptions, sortOptions, searchOptions);
 
             var collection = PagedCollection<Room>.Create<RoomsResponse>(
                 Link.ToCollection(nameof(GetAllRooms)),
