@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace LandonApi.Infrastructure
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class SortableAttribute: Attribute
+    public class SortTerm
     {
-
+        public string Name { get; set; }
+        public bool Descending { get; set; }
     }
 }
