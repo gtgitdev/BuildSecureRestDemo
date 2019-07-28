@@ -119,7 +119,8 @@ namespace LandonApi.Infrastructure
                 var right = term.ExpressionProvider.GetValue(term.Value);
 
                 // x.Property == "Value"
-                var comparisonExpression = Expression.Equal(left, right);
+                var comparisonExpression = term.ExpressionProvider
+                    .GetComparison(left, term.Operator, right);
 
                 // x => x.Property == "Value"
                 var lambdaExpression = ExpressionHelper
