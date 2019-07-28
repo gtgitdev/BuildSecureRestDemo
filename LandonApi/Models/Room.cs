@@ -10,7 +10,7 @@ namespace LandonApi.Models
     {
         [Sortable]
         public string Name { get; set; }
-        [Sortable]
+        [Sortable(Default = true)]
         public decimal Rate { get; set; }
     }
 }
