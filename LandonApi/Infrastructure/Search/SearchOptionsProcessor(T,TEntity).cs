@@ -83,6 +83,7 @@ namespace LandonApi.Infrastructure
                 {
                     ValidSyntax = term.ValidSyntax,
                     Name = declaredTerm.Name,
+                    EntityName = declaredTerm.EntityName,
                     Operator = term.Operator,
                     Value = term.Value,
                     ExpressionProvider = declaredTerm.ExpressionProvider
@@ -94,8 +95,16 @@ namespace LandonApi.Infrastructure
             => typeof(T).GetTypeInfo()
                 .DeclaredProperties
                 .Where(p => p.GetCustomAttributes<SearchableAttribute>().Any())
-                .Select(p => new SearchTerm { Name = p.Name,
-                    ExpressionProvider = p.GetCustomAttribute<SearchableAttribute>().ExpressionProvider });
+                .Select(p =>
+                {
+                    var attribute = p.GetCustomAttribute<SearchableAttribute>();
+                    return new SearchTerm
+                    {
+                        Name = p.Name,
+                        EntityName = attribute.EntityProperty,
+                        ExpressionProvider = attribute.ExpressionProvider
+                    };
+                });
 
         public IQueryable<TEntity> Apply(IQueryable<TEntity> query)
         {
@@ -107,7 +116,7 @@ namespace LandonApi.Infrastructure
 
             foreach (var term in terms)
             {
-                var propertyInfo = ExpressionHelper.GetPropertyInfo<TEntity>(term.Name);
+                var propertyInfo = ExpressionHelper.GetPropertyInfo<TEntity>(term.EntityName ?? term.Name);
                 var obj = ExpressionHelper.Parameter<TEntity>();
 
                 // Build up the LINQ expression backwards

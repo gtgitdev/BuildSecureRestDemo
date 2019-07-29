@@ -59,13 +59,14 @@ namespace LandonApi.Controllers
         [ProducesResponseType(400)]
         public async Task<ActionResult<PagedCollection<Opening>>> GetAllRoomOpenings(
             [FromQuery] PagingOptions pagingOptions,
-            [FromQuery] SortOptions<Opening, OpeningEntity> sortOptions)
+            [FromQuery] SortOptions<Opening, OpeningEntity> sortOptions,
+            [FromQuery] SearchOptions<Opening, OpeningEntity> searchOptions)
         {
 
             pagingOptions.Offset = pagingOptions.Offset ?? defaultPagingOptions.Offset;
             pagingOptions.Limit = pagingOptions.Limit ?? defaultPagingOptions.Limit;
 
-            var openings = await openingService.GetOpeningsAsync(pagingOptions, sortOptions);
+            var openings = await openingService.GetOpeningsAsync(pagingOptions, sortOptions, searchOptions);
 
             var collection = PagedCollection<Opening>.Create(
                 Link.ToCollection(nameof(GetAllRoomOpenings)),
