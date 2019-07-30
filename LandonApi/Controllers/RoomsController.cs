@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LandonApi.Infrastructure;
 using LandonApi.Models;
 using LandonApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -55,7 +56,11 @@ namespace LandonApi.Controllers
                 rooms.TotalSize,
                 pagingOptions);
             collection.Openings = Link.ToCollection(nameof(GetAllRoomOpenings));
-
+            collection.RoomsQuery = FormMetadata.FromResource<Room>(
+                Link.ToForm(nameof(GetAllRooms),
+                    null,
+                    Link.GetMethod,
+                    Form.QueryRelation));
             return collection;
         }
 
