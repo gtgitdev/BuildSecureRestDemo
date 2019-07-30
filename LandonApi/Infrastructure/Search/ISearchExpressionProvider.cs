@@ -8,6 +8,7 @@ namespace LandonApi.Infrastructure
 {
     public interface ISearchExpressionProvider
     {
+        IEnumerable<string> GetOperators();
         ConstantExpression GetValue(string input);
         Expression GetComparison(MemberExpression left, string termOperator, ConstantExpression right);
     }

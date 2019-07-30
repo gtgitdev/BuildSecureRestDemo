@@ -96,11 +96,11 @@ namespace LandonApi.Controllers
         }
 
         // Post /rooms/{roomId}/bookings
-        [HttpPost("{roomId}/bookings", Name = nameof(CreateBookingForRoom))]
+        [HttpPost("{roomId}/bookings", Name = nameof(CreateBookingForRoomAsync))]
         [ProducesResponseType(404)]
         [ProducesResponseType(400)]
         [ProducesResponseType(201)]
-        public async Task<ActionResult> CreateBookingForRoom(Guid roomId, [FromBody] BookingForm bookingForm)
+        public async Task<ActionResult> CreateBookingForRoomAsync(Guid roomId, [FromBody] BookingForm bookingForm)
         {
             var room = await roomService.GetRoomAsync(roomId);
             if (room == null) return NotFound();
