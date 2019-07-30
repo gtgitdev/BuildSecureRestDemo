@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LandonApi.Controllers
 {
@@ -30,6 +31,18 @@ namespace LandonApi.Controllers
 
             return booking;
         }
+
+        // Delete /bookings/{bookingId}
+        [HttpDelete("{bookingId}", Name = nameof(DeleteBookingById))]
+        [ProducesResponseType(204)]
+        public async Task<IActionResult> DeleteBookingById(Guid bookingId)
+        {
+            //TODO: Authorize that the user is allowed to do this!
+            await _bookingService.DeleteBookingAsync(bookingId);
+
+            return NoContent();
+        }
+
     }
 
 }
