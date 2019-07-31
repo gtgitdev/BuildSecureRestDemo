@@ -41,6 +41,7 @@ namespace LandonApi
             services.AddScoped<IOpeningService, DefaultOpeningService>();
             services.AddScoped<IBookingService, DefaultBookingService>();
             services.AddScoped<IDateLogicService, DefaultDateLogicService>();
+            services.AddScoped<IUserService, DefaultUserService>();
 
             //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(MappingProfile));
@@ -97,7 +98,7 @@ namespace LandonApi
             builder.AddRoles<UserRoleEntity>()
                 .AddEntityFrameworkStores<HotelApiDbContext>()
                 .AddDefaultTokenProviders()
-                .AddSignInManager<UserEntity>();
+                .AddSignInManager<SignInManager<UserEntity>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
