@@ -10,6 +10,7 @@ using LandonApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +59,10 @@ namespace LandonApi
             services.AddDbContext<HotelApiDbContext>(options =>
                 options.UseInMemoryDatabase("landondb"));
 
+            // Add ASP.NET core Identity
+            AddIdentityCoreServices(services);
+
+
             services.AddMvc(options =>
                 {
                     options.CacheProfiles.Add("Static", new CacheProfile
@@ -82,6 +87,17 @@ namespace LandonApi
             });
 
             services.AddResponseCaching();
+        }
+
+        private static void AddIdentityCoreServices(IServiceCollection services)
+        {
+            var builder = services.AddIdentityCore<UserEntity>();
+            builder = new IdentityBuilder(builder.UserType, typeof(UserRoleEntity), builder.Services);
+
+            builder.AddRoles<UserRoleEntity>()
+                .AddEntityFrameworkStores<HotelApiDbContext>()
+                .AddDefaultTokenProviders()
+                .AddSignInManager<UserEntity>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

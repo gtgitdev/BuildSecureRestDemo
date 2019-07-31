@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LandonApi.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LandonApi
 {
-    public class HotelApiDbContext : DbContext
+    public class HotelApiDbContext : IdentityDbContext<UserEntity, UserRoleEntity, Guid>
     {
         public HotelApiDbContext(DbContextOptions options)
             : base(options){ }
