@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using LandonApi.Infrastructure;
+using Newtonsoft.Json;
 
 namespace LandonApi.Models
 {
-    public class HotelInfo: Resource
+    public class HotelInfo: Resource, IEtaggable
     {
         public string Title { get; set; }
         public string Tagline { get; set; }
@@ -14,6 +16,11 @@ namespace LandonApi.Models
         public string Website { get; set; }
         public Address Location { get; set; }
 
+        public string GetEtag()
+        {
+            var serialized = JsonConvert.SerializeObject(this);
+            return Md5Hash.ForString(serialized);
+        }
     }
 
     public class Address
