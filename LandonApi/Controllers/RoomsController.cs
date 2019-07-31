@@ -68,11 +68,14 @@ namespace LandonApi.Controllers
         [HttpGet("openings", Name = nameof(GetAllRoomOpenings))]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        [ResponseCache(Duration = 30,
+            VaryByQueryKeys = new []{"offset", "limit", "orderBy", "search"})]
         public async Task<ActionResult<PagedCollection<Opening>>> GetAllRoomOpenings(
             [FromQuery] PagingOptions pagingOptions,
             [FromQuery] SortOptions<Opening, OpeningEntity> sortOptions,
             [FromQuery] SearchOptions<Opening, OpeningEntity> searchOptions)
         {
+
 
             pagingOptions.Offset = pagingOptions.Offset ?? defaultPagingOptions.Offset;
             pagingOptions.Limit = pagingOptions.Limit ?? defaultPagingOptions.Limit;
